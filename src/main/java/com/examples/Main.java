@@ -11,7 +11,7 @@ import java.util.Set;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        writeFileChannel(ByteBuffer.wrap("debtor_depositNumber_amount \r pouria_639882688_1000000  ".getBytes()));
+        writeFileChannel(ByteBuffer.wrap(" PouriaKarimi 639882688 1000000  ".getBytes()));
 
     }
     public static void writeFileChannel(ByteBuffer byteBuffer)throws Exception {

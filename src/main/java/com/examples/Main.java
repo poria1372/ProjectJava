@@ -11,7 +11,7 @@ import java.util.Set;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        writeFileChannel(ByteBuffer.wrap(" PouriaKarimi 639882688 1000000 \n MeysamKarimi 584712698 300000 \n  AmirHatami 6398258441 500000 ".getBytes()));
+        writeFileChannel(ByteBuffer.wrap(" PouriaKarimi 639882688 1000000 \n MeysamKarimi 584712698 300000 \n AmirHatami 6398258441 500000 ".getBytes()));
 
 
     }
@@ -19,7 +19,7 @@ public class Main {
         Set<StandardOpenOption> options = new HashSet<>();
         options.add(StandardOpenOption.CREATE);
         options.add(StandardOpenOption.APPEND);
-        Path path = Paths.get("c:/java/person.txt");
+        Path path = Paths.get("c:/java/Debtor.txt");
         FileChannel fileChannel = FileChannel.open(path, options);
         fileChannel.write(byteBuffer);
         fileChannel.close();

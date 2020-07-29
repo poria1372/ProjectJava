@@ -7,18 +7,27 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
 
-        Path path= Paths.get("c:\\java\\Debtor.txt");
-        Path done= Files.createFile(path);
+        try {
+            Path file1= Paths.get("c:/java/Payment.txt");
+            Path done1=Files.createFile(file1);
+            for(int i=1; i<21; i++) {
+                String contetnt1= "Creditor  1.20.100.1  1000000\n";
+                Files.write(done1, contetnt1.getBytes(),StandardOpenOption.APPEND);
+            }
 
-        String content="pouriaKArimi 639852147 500000 \n MeysamKarimi 369852147 3000000";
+            Path file2=Paths.get("c:/java/Inventoy.txt");
+            Path done2=Files.createFile(file2);
+            String content2="1.10.100.1  1000000";
+            Files.write(done2,content2.getBytes());
+            System.out.println("create file");
 
-        Files.write(path,content.getBytes(), StandardOpenOption.APPEND);
 
 
-        System.out.println("file created ");
-
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 }
-

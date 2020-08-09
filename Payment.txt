@@ -1,1 +1,1 @@
-Debtor 1.10.100.1 10000Creditor 1.20.100.1 100Creditor 1.20.100.2 200Creditor 1.20.100.3 300Creditor 1.20.100.4 400Creditor 1.20.100.5 500Creditor 1.20.100.6 600Creditor 1.20.100.7 700Creditor 1.20.100.8 800Creditor 1.20.100.9 900
+debtor   1.10.100.1   5000

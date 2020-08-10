@@ -18,12 +18,10 @@ public class Project {
 
     static boolean debtorsInventoryIsEnough = false;
     static int remainOfCredit = 0;
-
     static String lastDebtor = "";
 
+
     public static void main(String[] args) {
-
-
         try {
             Files.createFile(paymentPath);
             System.out.println("Payment file create successfully!");
@@ -53,13 +51,11 @@ public class Project {
 
     private static void commandHandler(String command) {
         String[] splittedCommand = command.split(" ");
-
         if (splittedCommand.length == 3) {
-
             if (splittedCommand[0].equals("debtor") || splittedCommand[0].equals("creditor")) {
                 if (splittedCommand[0].equals("debtor")) {
                     writer(paymentPath, command);
-                    System.out.println("write to payment");
+                    System.out.println("write to paymentFile");
                     debtorsInventoryIsEnough = false;
                     int amount = Integer.parseInt(splittedCommand[2]);
                     remainOfCredit = amount;
@@ -74,15 +70,14 @@ public class Project {
                 } else if (splittedCommand[0].equals("creditor")) {
                     if (debtorsInventoryIsEnough) {
                         writer(paymentPath, command);
-                        System.out.println("write to payment");
+                        System.out.println("write to paymentFile");
                         String creditorID = splittedCommand[1];
                         String amount = splittedCommand[2];
                         if (remainedCreditIsEnough(parseInt(amount))) {
-                            remainOfCredit -= Integer.parseInt(amount);
+                            remainOfCredit -= parseInt(amount);
                             writeTransaction(lastDebtor, creditorID, amount);
-
                             int creditorLastInventory = creditorLastInventoryFinder(creditorID);
-                            updateInventory(creditorID, (creditorLastInventory + Integer.parseInt(amount)));
+                            updateInventoryFile(creditorID, (creditorLastInventory + parseInt(amount)));
                         } else {
                             System.out.println("Amount of remained credit(debt from debtor) is less than credit amount for creditor!");
                         }
@@ -95,7 +90,7 @@ public class Project {
 
         } else if (splittedCommand.length == 2) {
             writer(inventoryPath, command);
-            System.out.println("write to inventory");
+            System.out.println("write to inventory file");
         } else {
             System.out.println("the command format is incorrect!");
         }
@@ -113,13 +108,10 @@ public class Project {
         }
     }
 
-
     private static ArrayList<String> reader(Path path) {
         ArrayList<String> records = new ArrayList<>();
         try {
-
             List<String> lines = Files.readAllLines(path);
-
             for (String line : lines) {
                 records.add(line);
             }
@@ -130,21 +122,17 @@ public class Project {
         return null;
     }
 
-
     private static boolean debtorsInventoryIsEnough(String debtorID, int amount) {
-
         ArrayList<String> records = reader(inventoryPath);
         if (records != null) {
             boolean debtorIsExist = false;
-
             for (int counter = 0; counter < records.size(); counter++) {
                 String[] splittedRecord = records.get(counter).split(" ");
                 if (splittedRecord[0].equals(debtorID)) {
                     debtorIsExist = true;
-
-                    int inventoryAmount = Integer.parseInt(splittedRecord[1]);
+                    int inventoryAmount = parseInt(splittedRecord[1]);
                     if (inventoryAmount >= amount) {
-                        updateInventory(debtorID, inventoryAmount - amount);
+                        updateInventoryFile(debtorID, inventoryAmount - amount);
                         return true;
                     } else {
                         return false;
@@ -158,15 +146,12 @@ public class Project {
         return false;
     }
 
-
     private static void writeTransaction(String lastDebtor, String creditorID, String amount) {
         String transactionCommand = lastDebtor + " " + creditorID + " " + amount;
         writer(transactionsPath, transactionCommand);
-        System.out.println("record write in transaction file");
     }
 
-
-    private static void updateInventory(String ID, int amount) {
+    private static void updateInventoryFile(String ID, int amount) {
         ArrayList<String> records = reader(inventoryPath);
         try {
             new FileOutputStream("Inventory.txt");
@@ -188,13 +173,12 @@ public class Project {
         }
     }
 
-
     private static int creditorLastInventoryFinder(String creditorID) {
         ArrayList<String> records = reader(inventoryPath);
         for (String record : records) {
             String[] splittedRecord = record.split(" ");
             if (splittedRecord[0].equals(creditorID)) {
-                return Integer.parseInt(splittedRecord[1]);
+                return parseInt(splittedRecord[1]);
             }
         }
         return 0;
@@ -204,8 +188,7 @@ public class Project {
         if (remainOfCredit - amount >= 0) {
             return true;
         }
-
         return false;
-
     }
+
 }

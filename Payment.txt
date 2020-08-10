@@ -1,3 +1,4 @@
-debtor 1.10.100.2 1000
+debtor 1.10.100.1 1000
 creditor 1.20.100.1 500
 creditor 1.20.100.2 400
+creditor 1.20.100.3 100

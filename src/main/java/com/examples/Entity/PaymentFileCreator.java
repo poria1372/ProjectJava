@@ -16,27 +16,27 @@ public class PaymentFileCreator implements FileGenerator {
         } catch (IOException e) {
             throw new PaymentFileCreationException();
         }
-        String lastRecord = null;
-        String content = "debtor" + "\t" + "1.10.100.1" + "\t" + "100000\n";
-        try {
-            Files.write(payment, content.getBytes(), StandardOpenOption.APPEND);
-        } catch (IOException e) {
-            throw new PaymentFileWritingException();
-        }
         String defaultRecord = "creditor" + "\t" + "1.20.100.";
-        String finalRecordString = null;
+        String finalRecordString = "";
+        int sumOfAmount = 0;
         for (int i = 1; i < 100; i++) {
             int amountRandom = RandomGenerator.getRandomNumber(1000, 2000);
-            int amount=Integer.parseInt(String.valueOf(amountRandom));
+            int amount = Integer.parseInt(String.valueOf(amountRandom));
+            sumOfAmount += amount;
             String s2 = defaultRecord.concat(String.valueOf(i));
             String s3 = s2.concat("\t");
-            finalRecordString = s3.concat(String.valueOf(amountRandom).concat("\n"));
-            try {
-                Files.write(payment, (finalRecordString).getBytes(), StandardOpenOption.APPEND);
+            finalRecordString = finalRecordString + s3.concat(String.valueOf(amountRandom).concat("\n"));
 
-            } catch (IOException e) {
-                throw new PaymentFileWritingException();
-            }
+        }
+
+        String content = "debtor" + "\t" + "1.10.100.1" + "\t" + String.valueOf(sumOfAmount).concat("\n");
+
+        try {
+            Files.write(payment, content.getBytes(), StandardOpenOption.APPEND);
+            Files.write(payment, finalRecordString.getBytes(), StandardOpenOption.APPEND);
+
+        } catch (IOException e) {
+            throw new PaymentFileWritingException();
         }
 
         Log4j.getLogger().info("Payment file create successfully!");

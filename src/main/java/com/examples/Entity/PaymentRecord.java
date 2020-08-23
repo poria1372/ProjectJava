@@ -8,7 +8,6 @@ public class PaymentRecord {
     BigDecimal amount;
 
 
-
     public PaymentRecord() {
     }
 

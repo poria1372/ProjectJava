@@ -3,7 +3,6 @@ package com.examples.Entity;
 import com.examples.Exception.TransactionFileReadingException;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,7 +15,6 @@ public class TransactionFileReader implements FileGenerator {
             line = Files.lines(transactions);
         } catch (IOException e) {
             throw new TransactionFileReadingException();
-
         }
         List<TransactionRecord> transactionRecordList = line.map(s -> createTransactionsObject(s)).collect(Collectors.toList());
         return transactionRecordList;

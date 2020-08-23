@@ -4,18 +4,21 @@ import com.examples.Entity.*;
 import com.examples.Exception.*;
 import com.examples.Log.Log4j;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.Files;
 import java.util.List;
 
 public class Main {
-    static {
-        boolean debtorsInventoryIsEnough = false;
-        int remainOfCredit = 0;
-        String lastDebtor = "";
-    }
-
-    public static void main(String[] args) throws PaymentFileWritingException, PaymentFileCreationException, PaymentFileReadingException, InventoryFileCreationException, InventoryFileWritingException, InventoryFileReadingException, TransactionFileCreationException, TransactionFileWritingException, TransactionFileReadingException {
-
+    public static void main(String[] args) throws PaymentFileWritingException, PaymentFileCreationException, PaymentFileReadingException, InventoryFileCreationException, InventoryFileWritingException, InventoryFileReadingException, TransactionFileCreationException, TransactionFileWritingException, TransactionFileReadingException, DebtorAmountException, IOException {
+        try {
+            System.out.println("! Deleting File From The Configured Path !");
+            Files.delete(FileGenerator.transactions);
+            Files.delete(FileGenerator.payment);
+            Files.delete(FileGenerator.inventory);
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
         InventoryFileCreator inventoryFileCreator = new InventoryFileCreator();
         inventoryFileCreator.createInventoryFile();
 
@@ -36,17 +39,32 @@ public class Main {
             Log4j.getLogger().info(paymentRecord.toString());
 
         }
-        TransactionFileCreator transactionFileCreator = new TransactionFileCreator();
-        transactionFileCreator.createTransactionFile();
 
-        TransactionFileReader transactionFileReader= new TransactionFileReader();
-        List<TransactionRecord> transactionRecordList=transactionFileReader.readTransactionFile();
+        PaymentValidator paymentValidator = new PaymentValidator();
+        if (!paymentValidator.isValidPayment(paymentRecordList, inventoryRecordList.get(0).getAmount()))
+            throw new DebtorAmountException("some of payment amounts is more than inventory amount");
+        BigDecimal someOfCreditorAmount = calculateSomeOfCreditorAmount(paymentRecordList);
+
+        TransactionFileCreator transactionFileCreator = new TransactionFileCreator();
+        transactionFileCreator.createTransactionFile(paymentRecordList);
+
+        InventoryFileModifier inventoryFileModifier = new InventoryFileModifier();
+        inventoryFileModifier.modifyAccountsBalance(paymentRecordList.get(0).getAccountNumber(), inventoryRecordList.get(0).getAmount().subtract(someOfCreditorAmount));
+
+        TransactionFileReader transactionFileReader = new TransactionFileReader();
+        List<TransactionRecord> transactionRecordList = transactionFileReader.readTransactionFile();
         for (TransactionRecord transactionRecord : transactionRecordList) {
             Log4j.getLogger().info(transactionRecord.toString());
-
         }
-
     }
 
+    private static BigDecimal calculateSomeOfCreditorAmount(List<PaymentRecord> paymentRecordList) {
+        BigDecimal sumOfDebtors = BigDecimal.ZERO;
+        for (PaymentRecord paymentRecord : paymentRecordList) {
+            if (paymentRecord.getPaymentType().equals(PaymentTypesStatic.creditPaymentType))
+                sumOfDebtors = sumOfDebtors.add(paymentRecord.getAmount());
+        }
+        return sumOfDebtors;
+    }
 }
 
